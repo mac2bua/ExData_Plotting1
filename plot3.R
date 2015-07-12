@@ -7,7 +7,7 @@ setwd("/home/cristian/Git/coursera/exploratory_data_analysis/")
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
 
 # open PNG device; create 'plot2.png'
-png(file = "plot2.png", height = 480, width = 480)
+png(file = "plot3.png", height = 480, width = 480)
 
 # read data
 data = read.table("household_power_consumption.txt", header = TRUE, sep=';', stringsAsFactors=FALSE)
@@ -21,15 +21,31 @@ data <- subset(data, Date == "2007-01-02" | Date == "2007-02-02")
 # create extracolumn with date and time concatenated
 data <- transform(data,  Datetime = strptime(paste(Date, Time), 
                                                  format="%Y-%d-%m %H:%M:%S"))
+
 # transform Globa_active_power to numeric
 data <- transform(data, 
                   Global_active_power = as.numeric(as.character(Global_active_power)))
 
 # create the plot
-with(data, plot(Datetime, Global_active_power, 
-                  type = "l",
-                  ylab = "Global active power (kilowatts)",
-                  xlab = ""))
+with(data, {
+  plot(Datetime, Sub_metering_1,
+       ylab = "Energy sub metering",
+       xlab = "",
+       ylim = c(-1, 38),
+       type = "n")
+  lines(Datetime, Sub_metering_1,
+        type = "l",
+        col = "black")
+  lines(Datetime, Sub_metering_2,
+        type = "l",
+        col = "red")
+  lines(Datetime, Sub_metering_3,
+        type = "l",
+        col = "blue")
+  legend("topright", lty = "solid",
+         col = c("black", "red", "blue"),
+         legend = c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+})
 
 # close the PNG device
 dev.off()
